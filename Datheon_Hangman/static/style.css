@@ -1,0 +1,1098 @@
+/* ==========================================================================
+   DATHEON PYTHON INTERNSHIP - HANGMAN GAME STYLESHEET
+   Aesthetic: Premium Dark Navy / Cyber-Indigo Dashboard
+   Zero JavaScript • Pure CSS3 Animations & Layouts
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. CSS VARIABLES & THEME SETUP
+   -------------------------------------------------------------------------- */
+:root {
+    /* Palette */
+    --bg-base: #070B14;
+    --bg-surface: #0E1626;
+    --bg-card: rgba(18, 28, 48, 0.75);
+    --bg-card-hover: rgba(24, 37, 63, 0.85);
+    --bg-card-solid: #121C30;
+    --bg-alt: #16223B;
+    
+    /* Borders */
+    --border-subtle: rgba(99, 102, 241, 0.15);
+    --border-medium: rgba(139, 92, 246, 0.3);
+    --border-glow: rgba(168, 85, 247, 0.5);
+
+    /* Gradients */
+    --grad-primary: linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #A855F7 100%);
+    --grad-primary-hover: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #9333EA 100%);
+    --grad-cyan: linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%);
+    --grad-danger: linear-gradient(135deg, #EF4444 0%, #F43F5E 100%);
+    --grad-success: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    --grad-card: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0) 100%);
+
+    /* Colors */
+    --primary: #6366F1;
+    --primary-light: #818CF8;
+    --purple: #8B5CF6;
+    --purple-light: #A78BFA;
+    --accent: #A855F7;
+    --cyan: #38BDF8;
+    --success: #10B981;
+    --success-bg: rgba(16, 185, 129, 0.12);
+    --warning: #F59E0B;
+    --warning-bg: rgba(245, 158, 11, 0.12);
+    --danger: #F43F5E;
+    --danger-bg: rgba(244, 63, 94, 0.12);
+    --info: #38BDF8;
+    --info-bg: rgba(56, 189, 248, 0.12);
+
+    /* Text Colors */
+    --text-main: #F8FAFC;
+    --text-muted: #94A3B8;
+    --text-dim: #64748B;
+    --text-highlight: #FFFFFF;
+
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 25px rgba(99, 102, 241, 0.35);
+    --shadow-glow-cyan: 0 0 20px rgba(56, 189, 248, 0.3);
+
+    /* Fonts */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+}
+
+/* --------------------------------------------------------------------------
+   2. GLOBAL RESET & BASE STYLES
+   -------------------------------------------------------------------------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-base);
+    color: var(--text-main);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    position: relative;
+    padding: 1.5rem 1rem;
+}
+
+/* Ambient Background Glow Orbs */
+.background-decorations {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.glow-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.15;
+    transition: all 1s ease;
+}
+
+.orb-1 {
+    width: 500px;
+    height: 500px;
+    background: #6366F1;
+    top: -100px;
+    left: -100px;
+}
+
+.orb-2 {
+    width: 600px;
+    height: 600px;
+    background: #8B5CF6;
+    bottom: -150px;
+    right: -100px;
+}
+
+.orb-3 {
+    width: 350px;
+    height: 350px;
+    background: #06B6D4;
+    top: 40%;
+    left: 60%;
+    opacity: 0.08;
+}
+
+/* Container */
+.app-container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   3. HEADER
+   -------------------------------------------------------------------------- */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.75rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    backdrop-filter: blur(16px);
+    box-shadow: var(--shadow-md);
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.logo-box {
+    width: 54px;
+    height: 54px;
+    border-radius: 16px;
+    background: var(--grad-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-glow);
+    flex-shrink: 0;
+}
+
+.logo-icon {
+    width: 30px;
+    height: 30px;
+    stroke: #FFFFFF;
+}
+
+.project-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--cyan);
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+}
+
+.project-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-highlight);
+    line-height: 1.1;
+}
+
+.project-title span {
+    background: var(--grad-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.header-badges {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+}
+
+.badge-purple {
+    background: rgba(139, 92, 246, 0.15);
+    color: var(--purple-light);
+    border: 1px solid rgba(139, 92, 246, 0.35);
+}
+
+.badge-indigo {
+    background: rgba(99, 102, 241, 0.15);
+    color: var(--primary-light);
+    border: 1px solid rgba(99, 102, 241, 0.35);
+}
+
+.badge-navy {
+    background: rgba(14, 22, 38, 0.8);
+    color: var(--text-muted);
+    border: 1px solid var(--border-subtle);
+}
+
+/* --------------------------------------------------------------------------
+   4. STATS DASHBOARD GRID
+   -------------------------------------------------------------------------- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+}
+
+.stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 1.25rem 1.4rem;
+    backdrop-filter: blur(12px);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-medium);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.stat-sub {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    font-family: var(--font-mono);
+    line-height: 1;
+    margin-bottom: 0.75rem;
+}
+
+.stat-denom {
+    font-size: 1rem;
+    color: var(--text-dim);
+    font-weight: 600;
+}
+
+.text-danger { color: var(--danger); }
+.text-warning { color: var(--warning); }
+.text-success { color: var(--success); }
+.text-cyan { color: var(--cyan); }
+
+/* Attempts Dots */
+.attempts-pills {
+    display: flex;
+    gap: 0.35rem;
+}
+
+.mistake-dot {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.mistake-dot.filled {
+    background: var(--danger);
+    box-shadow: 0 0 8px rgba(244, 63, 94, 0.6);
+}
+
+/* Progress Bar */
+.progress-bar-bg {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: var(--grad-success);
+    transition: width 0.4s ease;
+}
+
+.progress-bar-fill.danger {
+    background: var(--grad-danger);
+}
+
+/* Stat Breakdown */
+.stat-breakdown {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.tag-count {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+}
+
+.tag-correct {
+    background: var(--success-bg);
+    color: var(--success);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.tag-incorrect {
+    background: var(--danger-bg);
+    color: var(--danger);
+    border: 1px solid rgba(244, 63, 94, 0.3);
+}
+
+.stat-action-card {
+    justify-content: center;
+}
+
+/* --------------------------------------------------------------------------
+   5. MAIN DASHBOARD LAYOUT (2 COLUMNS)
+   -------------------------------------------------------------------------- */
+.game-dashboard {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 1.5rem;
+    align-items: stretch;
+}
+
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    padding: 1.75rem;
+    backdrop-filter: blur(16px);
+    box-shadow: var(--shadow-md);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.card-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-highlight);
+}
+
+.stage-tag {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin-left: 0.5rem;
+}
+
+.status-pill {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+    text-transform: uppercase;
+}
+
+.status-active {
+    background: rgba(99, 102, 241, 0.2);
+    color: var(--primary-light);
+    border: 1px solid rgba(99, 102, 241, 0.4);
+}
+
+.status-won {
+    background: var(--success-bg);
+    color: var(--success);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.status-lost {
+    background: var(--danger-bg);
+    color: var(--danger);
+    border: 1px solid rgba(244, 63, 94, 0.4);
+}
+
+/* --------------------------------------------------------------------------
+   6. LEFT CARD: ASCII GALLOWS ART
+   -------------------------------------------------------------------------- */
+.gallows-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.art-viewport {
+    background: #060A12;
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: 14px;
+    padding: 1.5rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(99, 102, 241, 0.1);
+    margin-bottom: 1.25rem;
+    min-height: 240px;
+    position: relative;
+    overflow: hidden;
+}
+
+.art-viewport::before {
+    content: "ASCII GALLOWS MONITOR";
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+}
+
+.hangman-art {
+    font-family: var(--font-mono);
+    font-size: 1.05rem;
+    line-height: 1.35;
+    color: var(--cyan);
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+    font-weight: 700;
+    user-select: none;
+    white-space: pre;
+}
+
+.stage-description {
+    background: var(--bg-alt);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 1.4;
+}
+
+/* --------------------------------------------------------------------------
+   7. RIGHT CARD: GAMEPLAY CONTROLS & WORDS
+   -------------------------------------------------------------------------- */
+.play-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Feedback Alert Banner */
+.feedback-banner {
+    display: flex;
+    align-items: center;
+    padding: 0.85rem 1.25rem;
+    border-radius: 12px;
+    gap: 0.85rem;
+    position: relative;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.feedback-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.feedback-content {
+    flex: 1;
+}
+
+.feedback-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.feedback-success {
+    background: var(--success-bg);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    color: #34D399;
+}
+.feedback-success .feedback-indicator {
+    background: #10B981;
+    box-shadow: 0 0 8px #10B981;
+}
+
+.feedback-danger {
+    background: var(--danger-bg);
+    border: 1px solid rgba(244, 63, 94, 0.35);
+    color: #FB7185;
+}
+.feedback-danger .feedback-indicator {
+    background: #F43F5E;
+    box-shadow: 0 0 8px #F43F5E;
+}
+
+.feedback-warning {
+    background: var(--warning-bg);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    color: #FBBF24;
+}
+.feedback-warning .feedback-indicator {
+    background: #F59E0B;
+    box-shadow: 0 0 8px #F59E0B;
+}
+
+.feedback-info {
+    background: var(--info-bg);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    color: #7DD3FC;
+}
+.feedback-info .feedback-indicator {
+    background: #38BDF8;
+    box-shadow: 0 0 8px #38BDF8;
+}
+
+/* Hidden Word Slots */
+.word-display-container {
+    background: #060A12;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 16px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
+}
+
+.section-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+}
+
+.letter-slots-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.65rem;
+    align-items: center;
+}
+
+.letter-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 54px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 10px;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.slot-char {
+    font-family: var(--font-mono);
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--text-highlight);
+}
+
+.letter-slot.revealed {
+    background: rgba(99, 102, 241, 0.12);
+    border-color: var(--primary);
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
+}
+
+.letter-slot.revealed .slot-char {
+    color: var(--cyan);
+    text-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+}
+
+.letter-slot.missed {
+    background: var(--danger-bg);
+    border-color: var(--danger);
+    box-shadow: 0 0 12px rgba(244, 63, 94, 0.3);
+}
+
+.letter-slot.missed .slot-char {
+    color: #FCA5A5;
+}
+
+.letter-slot.blank {
+    border-bottom: 3px solid var(--purple);
+}
+
+.letter-slot.blank .slot-char {
+    color: transparent;
+}
+
+/* Outcome Banners */
+.outcome-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 1.75rem;
+    border-radius: 16px;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.outcome-won {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(5, 150, 105, 0.25) 100%);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.2);
+}
+
+.outcome-lost {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.18) 0%, rgba(244, 63, 94, 0.25) 100%);
+    border: 1px solid rgba(244, 63, 94, 0.4);
+    box-shadow: 0 0 30px rgba(244, 63, 94, 0.2);
+}
+
+.outcome-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+}
+
+.outcome-details h3 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    margin-bottom: 0.3rem;
+    color: #FFFFFF;
+}
+
+.outcome-details p {
+    font-size: 0.95rem;
+    color: var(--text-main);
+}
+
+.revealed-word-tag {
+    background: #000000;
+    color: #F87171;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    letter-spacing: 0.08em;
+}
+
+/* Guess Input Form */
+.guess-input-section {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-medium);
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
+}
+
+.guess-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex: 1;
+    min-width: 140px;
+}
+
+.input-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.guess-input {
+    background: #060A12;
+    border: 2px solid rgba(99, 102, 241, 0.3);
+    border-radius: 12px;
+    color: #FFFFFF;
+    font-family: var(--font-mono);
+    font-size: 1.75rem;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+    height: 56px;
+    transition: all 0.2s ease;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+    outline: none;
+}
+
+.guess-input:focus {
+    border-color: var(--purple-light);
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.4), inset 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.guess-input::placeholder {
+    color: var(--text-dim);
+    opacity: 0.4;
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 0.85rem 1.5rem;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    height: 56px;
+    box-sizing: border-box;
+}
+
+.btn-primary {
+    background: var(--grad-primary);
+    color: #FFFFFF;
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+}
+
+.btn-primary:hover {
+    background: var(--grad-primary-hover);
+    box-shadow: 0 6px 22px rgba(139, 92, 246, 0.5);
+    transform: translateY(-1px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-main);
+    border: 1px solid var(--border-subtle);
+    height: 48px;
+    padding: 0.5rem 1.25rem;
+    font-size: 0.85rem;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--border-medium);
+    transform: translateY(-1px);
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.btn-success {
+    background: var(--grad-success);
+    color: #FFFFFF;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+}
+
+.btn-danger {
+    background: var(--grad-danger);
+    color: #FFFFFF;
+    box-shadow: 0 4px 16px rgba(244, 63, 94, 0.35);
+}
+
+.btn-lg {
+    padding: 0.9rem 2rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   8. ON-SCREEN KEYPAD (Pure HTML Form POST)
+   -------------------------------------------------------------------------- */
+.keypad-section {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 1.25rem 1.4rem;
+}
+
+.keypad-grid {
+    display: grid;
+    grid-template-columns: repeat(13, 1fr);
+    gap: 0.45rem;
+}
+
+.key-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    border-radius: 8px;
+    font-family: var(--font-mono);
+    font-size: 1.05rem;
+    font-weight: 700;
+    border: 1px solid transparent;
+    user-select: none;
+    transition: all 0.15s ease;
+}
+
+.key-available {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+    border-color: rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+}
+
+.key-available:hover {
+    background: var(--primary);
+    color: #FFFFFF;
+    border-color: var(--purple-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.key-available:active {
+    transform: translateY(0);
+}
+
+.key-correct {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--success);
+    border-color: rgba(16, 185, 129, 0.35);
+    cursor: not-allowed;
+    opacity: 0.9;
+}
+
+.key-incorrect {
+    background: rgba(244, 63, 94, 0.1);
+    color: var(--text-dim);
+    border-color: rgba(244, 63, 94, 0.2);
+    cursor: not-allowed;
+    text-decoration: line-through;
+    opacity: 0.5;
+}
+
+/* --------------------------------------------------------------------------
+   9. GUESSED LETTERS SUMMARY
+   -------------------------------------------------------------------------- */
+.guessed-summary-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
+}
+
+.guessed-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.badge-list-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.letter-tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    min-height: 34px;
+    align-items: center;
+}
+
+.letter-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.chip-correct {
+    background: rgba(16, 185, 129, 0.18);
+    color: #34D399;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.chip-incorrect {
+    background: rgba(244, 63, 94, 0.18);
+    color: #F87171;
+    border: 1px solid rgba(244, 63, 94, 0.4);
+    text-decoration: line-through;
+}
+
+.empty-hint {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    font-style: italic;
+}
+
+/* --------------------------------------------------------------------------
+   10. FOOTER
+   -------------------------------------------------------------------------- */
+.app-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.footer-left strong {
+    color: var(--cyan);
+}
+
+/* --------------------------------------------------------------------------
+   11. RESPONSIVE DESIGN BREAKPOINTS
+   -------------------------------------------------------------------------- */
+
+/* Large Tablets & Small Laptops (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .game-dashboard {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .keypad-grid {
+        grid-template-columns: repeat(9, 1fr);
+    }
+}
+
+/* Tablets (max-width: 768px) */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem 0.5rem;
+    }
+
+    .app-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1rem 1.25rem;
+    }
+
+    .header-badges {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .project-title {
+        font-size: 1.45rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 0.85rem;
+    }
+
+    .card {
+        padding: 1.25rem;
+    }
+
+    .letter-slot {
+        min-width: 36px;
+        height: 46px;
+    }
+
+    .slot-char {
+        font-size: 1.4rem;
+    }
+
+    .keypad-grid {
+        grid-template-columns: repeat(7, 1fr);
+        gap: 0.35rem;
+    }
+
+    .key-btn {
+        height: 40px;
+        font-size: 0.95rem;
+    }
+
+    .guessed-summary-section {
+        grid-template-columns: 1fr;
+    }
+
+    .app-footer {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+/* Mobile Phones (max-width: 480px) */
+@media (max-width: 480px) {
+    .guess-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn-submit {
+        width: 100%;
+    }
+
+    .keypad-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+
+    .hangman-art {
+        font-size: 0.88rem;
+    }
+
+    .outcome-banner {
+        flex-direction: column;
+        text-align: center;
+    }
+}

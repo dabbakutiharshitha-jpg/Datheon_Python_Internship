@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hangman Game | Datheon Python Internship</title>
+    <!-- Modern Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="background-decorations">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="brand">
+                <div class="logo-box">
+                    <!-- Clean SVG Gallows/Rope Logo -->
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon">
+                        <path d="M4 22h16"></path>
+                        <path d="M7 22V3h9v4"></path>
+                        <circle cx="16" cy="9" r="2"></circle>
+                        <path d="M16 11v5"></path>
+                        <path d="M14 13l2-1 2 1"></path>
+                        <path d="M14 19l2-3 2 3"></path>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <div class="project-tag">DATHEON PYTHON INTERNSHIP</div>
+                    <h1 class="project-title">HANGMAN <span>PRO</span></h1>
+                </div>
+            </div>
+            
+            <div class="header-badges">
+                <span class="badge badge-purple">Python 3 & Flask</span>
+                <span class="badge badge-indigo">Zero JavaScript</span>
+                <span class="badge badge-navy">Pure CSS3 UI</span>
+            </div>
+        </header>
+
+        <!-- STATS DASHBOARD -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Mistakes Made</span>
+                    <span class="stat-sub">Limit: {{ max_mistakes }}</span>
+                </div>
+                <div class="stat-value text-danger">{{ mistakes }} <span class="stat-denom">/ {{ max_mistakes }}</span></div>
+                <div class="attempts-pills">
+                    {% for i in range(max_mistakes) %}
+                        <span class="mistake-dot {% if i < mistakes %}filled{% endif %}"></span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Remaining Attempts</span>
+                    <span class="stat-sub">Lifelines</span>
+                </div>
+                <div class="stat-value {% if attempts_remaining <= 2 %}text-warning{% else %}text-success{% endif %}">
+                    {{ attempts_remaining }}
+                    <span class="stat-denom">left</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill {% if attempts_remaining <= 2 %}danger{% endif %}" style="width: {{ (attempts_remaining / max_mistakes) * 100 }}%;"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Total Guesses</span>
+                    <span class="stat-sub">Letters Tested</span>
+                </div>
+                <div class="stat-value text-cyan">{{ all_guesses|length }}</div>
+                <div class="stat-breakdown">
+                    <span class="tag-count tag-correct">{{ correct_guesses|length }} Correct</span>
+                    <span class="tag-count tag-incorrect">{{ incorrect_guesses|length }} Wrong</span>
+                </div>
+            </div>
+
+            <div class="stat-card stat-action-card">
+                <div class="stat-header">
+                    <span class="stat-label">Game Control</span>
+                    <span class="stat-sub">Reset state</span>
+                </div>
+                <form action="{{ url_for('new_game') }}" method="POST">
+                    <button type="submit" class="btn btn-secondary btn-block">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+                        </svg>
+                        New Game
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- MAIN GAME LAYOUT -->
+        <main class="game-dashboard">
+            <!-- LEFT: ASCII GALLOWS ARTWORK -->
+            <section class="card gallows-card">
+                <div class="card-header">
+                    <div class="card-title-group">
+                        <h2 class="card-title">Gallows Stage</h2>
+                        <span class="stage-tag">Stage {{ mistakes }} of {{ max_mistakes }}</span>
+                    </div>
+                    {% if game_status == 'won' %}
+                        <span class="status-pill status-won">VICTORY</span>
+                    {% elif game_status == 'lost' %}
+                        <span class="status-pill status-lost">DEFEAT</span>
+                    {% else %}
+                        <span class="status-pill status-active">ACTIVE</span>
+                    {% endif %}
+                </div>
+
+                <div class="art-viewport">
+                    <pre class="hangman-art">{{ current_stage_art }}</pre>
+                </div>
+
+                <div class="stage-description">
+                    {% if mistakes == 0 %}
+                        <span>Empty Gallows: No errors recorded.</span>
+                    {% elif mistakes == 1 %}
+                        <span>Head placed on the noose.</span>
+                    {% elif mistakes == 2 %}
+                        <span>Torso connected to the frame.</span>
+                    {% elif mistakes == 3 %}
+                        <span>Left arm attached. Danger rising!</span>
+                    {% elif mistakes == 4 %}
+                        <span>Both arms attached. 2 attempts left!</span>
+                    {% elif mistakes == 5 %}
+                        <span>Critical: Left leg attached. 1 attempt left!</span>
+                    {% else %}
+                        <span>Full hangman assembled. Game Over!</span>
+                    {% endif %}
+                </div>
+            </section>
+
+            <!-- RIGHT: GAMEPLAY CONTROLS & WORDS -->
+            <section class="card play-card">
+                <!-- FEEDBACK / ALERT NOTIFICATION -->
+                {% if feedback and feedback.message %}
+                    <div class="feedback-banner feedback-{{ feedback.type }}">
+                        <div class="feedback-indicator"></div>
+                        <div class="feedback-content">
+                            <p class="feedback-text">{{ feedback.message }}</p>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- WORD DISPLAY SECTION -->
+                <div class="word-display-container">
+                    <div class="section-label">HIDDEN WORD ({{ word_display|length }} LETTERS)</div>
+                    <div class="letter-slots-wrapper">
+                        {% for slot in word_display %}
+                            <div class="letter-slot {% if slot.revealed %}revealed{% else %}blank{% endif %} {% if slot.missed %}missed{% endif %}">
+                                <span class="slot-char">{{ slot.char }}</span>
+                                <span class="slot-underline"></span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- OUTCOME BANNERS OR GUESS FORM -->
+                {% if game_status == 'won' %}
+                    <div class="outcome-banner outcome-won">
+                        <div class="outcome-icon">🏆</div>
+                        <div class="outcome-details">
+                            <h3>Congratulations, Decryptor!</h3>
+                            <p>You guessed all letters correctly with <strong>{{ attempts_remaining }}</strong> attempt(s) remaining!</p>
+                        </div>
+                        <form action="{{ url_for('new_game') }}" method="POST" class="outcome-action">
+                            <button type="submit" class="btn btn-success btn-lg">Play Again</button>
+                        </form>
+                    </div>
+                {% elif game_status == 'lost' %}
+                    <div class="outcome-banner outcome-lost">
+                        <div class="outcome-icon">💀</div>
+                        <div class="outcome-details">
+                            <h3>Execution Completed!</h3>
+                            <p>You ran out of attempts. The secret word was: <span class="revealed-word-tag">{{ secret_word }}</span></p>
+                        </div>
+                        <form action="{{ url_for('new_game') }}" method="POST" class="outcome-action">
+                            <button type="submit" class="btn btn-danger btn-lg">Try Again</button>
+                        </form>
+                    </div>
+                {% else %}
+                    <!-- GUESS INPUT FORM -->
+                    <div class="guess-input-section">
+                        <form action="{{ url_for('guess') }}" method="POST" class="guess-form" autocomplete="off">
+                            <div class="input-wrapper">
+                                <label for="guess-field" class="input-label">Enter Letter</label>
+                                <input 
+                                    type="text" 
+                                    id="guess-field" 
+                                    name="guess" 
+                                    class="guess-input" 
+                                    maxlength="1" 
+                                    placeholder="?" 
+                                    autofocus 
+                                    required 
+                                    pattern="[A-Za-z]"
+                                    title="Type a single letter from A to Z"
+                                >
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-submit">
+                                <span>Submit Guess</span>
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="12 5 19 12 12 19"></polyline>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- ON-SCREEN INTERACTIVE KEYPAD (100% Pure HTML/CSS Form Submission) -->
+                    <div class="keypad-section">
+                        <div class="section-label">VIRTUAL KEYPAD (TAP OR CLICK TO GUESS)</div>
+                        <form action="{{ url_for('guess') }}" method="POST" class="keypad-grid">
+                            {% for item in alphabet_status %}
+                                {% if item.status == 'available' %}
+                                    <button type="submit" name="guess" value="{{ item.letter }}" class="key-btn key-available" title="Guess letter {{ item.letter }}">
+                                        {{ item.letter }}
+                                    </button>
+                                {% elif item.status == 'correct' %}
+                                    <span class="key-btn key-correct" title="Correctly guessed">
+                                        {{ item.letter }}
+                                    </span>
+                                {% else %}
+                                    <span class="key-btn key-incorrect" title="Incorrectly guessed">
+                                        {{ item.letter }}
+                                    </span>
+                                {% endif %}
+                            {% endfor %}
+                        </form>
+                    </div>
+                {% endif %}
+
+                <!-- TRACKED GUESSED LETTERS BREAKDOWN -->
+                <div class="guessed-summary-section">
+                    <div class="guessed-col">
+                        <div class="badge-list-label text-success">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Correct Guesses ({{ correct_guesses|length }})
+                        </div>
+                        <div class="letter-tags-container">
+                            {% if correct_guesses %}
+                                {% for char in correct_guesses %}
+                                    <span class="letter-chip chip-correct">{{ char }}</span>
+                                {% endfor %}
+                            {% else %}
+                                <span class="empty-hint">None yet</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="guessed-col">
+                        <div class="badge-list-label text-danger">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                            Incorrect Guesses ({{ incorrect_guesses|length }})
+                        </div>
+                        <div class="letter-tags-container">
+                            {% if incorrect_guesses %}
+                                {% for char in incorrect_guesses %}
+                                    <span class="letter-chip chip-incorrect">{{ char }}</span>
+                                {% endfor %}
+                            {% else %}
+                                <span class="empty-hint">None yet</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="app-footer">
+            <div class="footer-left">
+                <strong>Datheon Python Internship</strong> &bull; Professional Hangman Web Application
+            </div>
+            <div class="footer-right">
+                <span>Python 3.14 &bull; Flask &bull; Jinja2 &bull; Pure HTML5/CSS3 &bull; Zero JS</span>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
